@@ -1,3 +1,8 @@
+
+# Introduction to React - Reactjs.org
+
+This app is a result of trying out the entire tutorial including the bonus steps from [ReactJs.org](https://reactjs.org/tutorial/tutorial.html)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
