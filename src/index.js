@@ -52,6 +52,7 @@ function Square(props) {
               xIsNext: true,
               stepNumber: 0,
               moveLocation: Array(9).fill(null),
+              sortOrderAscending: true,
           };
       }
 
@@ -76,6 +77,7 @@ function Square(props) {
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
             moveLocation: moveLocation.concat([i]),
+            sortOrderAscending: this.state.sortOrderAscending,
           });
     }
 
@@ -95,24 +97,24 @@ function Square(props) {
     }
 
     render() {
-        const history = this.state.history;
+        const history = this.state.history.slice();
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
 
-        const moves = history.map((step, move) => {
+        let listOfMoves = [];
+        const moves = history
+        .map((step, move) => {
             const desc = move ? 
                 'Go to move #' + move + ' ' + this.getMoveLocation(move) :
                 'Go to game start';
             console.log();
             let styleClass = (move === this.state.stepNumber) ? 'list-item-bold' : 'list-item-normal';
-
             return (
             <li key={move} className={styleClass}>
                 <button onClick={() => this.jumpTo(move)}>{desc}</button>
-            </li>
-            );
+            </li>);
         });
-
+        let finalListOfMoves = (this.state.sortOrderAscending) ? moves : moves.reverse();
         let status;
         if(winner){
             status = 'Winner: ' + winner;
@@ -128,8 +130,14 @@ function Square(props) {
             />
           </div>
           <div className="game-info">
+            <div>
+                <button 
+                    onClick={() => this.setState({ sortOrderAscending: !this.state.sortOrderAscending,})}>
+                    {this.state.sortOrderAscending ? 'Sort moves in descending order instead' : 'Sort moves in ascending order instead'}
+                </button>
+            </div>
             <div>{status}</div>
-            <ol>{moves}</ol>
+            <ol reversed={!this.state.sortOrderAscending}>{finalListOfMoves}</ol>
           </div>
         </div>
       );
