@@ -54,6 +54,7 @@ function Square(props) {
               }],
               xIsNext: true,
               stepNumber: 0,
+              moveLocation: Array(9).fill(null),
           };
       }
 
@@ -62,9 +63,9 @@ function Square(props) {
       }
 
       handleClick(i) {
-
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length-1];
+        const moveLocation = this.state.moveLocation.slice(0,this.state.stepNumber +1);
         // create a copy of the state squares
         const squares = current.squares.slice();
         if (calculateWinner(squares) || squares[i]){
@@ -77,6 +78,7 @@ function Square(props) {
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
+            moveLocation: moveLocation.concat([i]),
           });
     }
 
@@ -87,6 +89,14 @@ function Square(props) {
         });
     }
 
+    getMostRecentMoveLocation(move){
+        let moveLocation = this.state.moveLocation.slice();
+        let i = moveLocation[move];
+        let row = parseInt(i / 3);
+        let col = i % 3;
+        return '('+row+','+col+')';
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
@@ -94,7 +104,7 @@ function Square(props) {
 
         const moves = history.map((step, move) => {
             const desc = move ? 
-                'Go to move #' + move :
+                'Go to move #' + move + this.getMostRecentMoveLocation(move) :
                 'Go to game start';
             return (
             <li key={move}>
