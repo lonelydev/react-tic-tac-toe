@@ -21,26 +21,23 @@ function Square(props) {
       return <Square value={this.props.squares[i]}  
       onClick={()=> this.props.onClick(i)}/>;
     }
+    
+    renderRow(startIndex, sizeOfRow) {
+        var rowElements = [];
+        for (let i=startIndex; i < startIndex+sizeOfRow; i++){
+            rowElements.push(this.renderSquare(i));
+        }
+        return <div className="board-row">{rowElements}</div>;
+    }
 
     render() {
+        let maxColumnsAndRows = Math.sqrt(this.props.squares.length); 
+        var rowArray = [];
+        for(let i=0; i < this.props.squares.length; i=i+maxColumnsAndRows) {
+            rowArray.push(this.renderRow(i, maxColumnsAndRows));
+        }
       return (
-        <div>
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
-        </div>
+        <div>{rowArray}</div>
       );
     }
   }
