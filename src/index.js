@@ -89,12 +89,12 @@ function Square(props) {
         });
     }
 
-    getMostRecentMoveLocation(move){
+    getMoveLocation(move){
         let moveLocation = this.state.moveLocation.slice();
         let i = moveLocation[move];
         let row = parseInt(i / 3);
         let col = i % 3;
-        return '('+row+','+col+')';
+        return '('+row+', '+col+')';
     }
 
     render() {
@@ -104,10 +104,13 @@ function Square(props) {
 
         const moves = history.map((step, move) => {
             const desc = move ? 
-                'Go to move #' + move + this.getMostRecentMoveLocation(move) :
+                'Go to move #' + move + ' ' + this.getMoveLocation(move) :
                 'Go to game start';
+            console.log();
+            let styleClass = (move === this.state.stepNumber) ? 'list-item-bold' : 'list-item-normal';
+
             return (
-            <li key={move}>
+            <li key={move} className={styleClass}>
                 <button onClick={() => this.jumpTo(move)}>{desc}</button>
             </li>
             );

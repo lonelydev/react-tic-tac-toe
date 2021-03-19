@@ -49,3 +49,11 @@ body {
     margin-left: 20px;
   }
   
+  .list-item-normal {
+    font-weight: normal;
+  }
+
+  .list-item-bold {
+    font-weight: bold;
+  }
+
