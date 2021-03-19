@@ -9,7 +9,7 @@ import './index.css';
 function Square(props) {
     // notice how onClick does not have any ()
       return (
-        <button className="square" 
+        <button className={props.isWinningSquare ? "square winning" : "square"} 
             onClick={props.onClick}>
           {props.value}
         </button>
@@ -17,15 +17,22 @@ function Square(props) {
       }
 
   class Board extends React.Component {
-    renderSquare(i) {
+    renderSquare(i, isWinningSquare) {
       return <Square value={this.props.squares[i]}  
-      onClick={()=> this.props.onClick(i)}/>;
+      onClick={()=> this.props.onClick(i)}
+      isWinningSquare={isWinningSquare}/>;
     }
     
     renderRow(startIndex, sizeOfRow) {
         var rowElements = [];
         for (let i=startIndex; i < startIndex+sizeOfRow; i++){
-            rowElements.push(this.renderSquare(i));
+            let x;
+            if (this.props.winningLine.includes(i)){
+                x = this.renderSquare(i, true);
+            }else{
+                x = this.renderSquare(i, false);
+            }
+            rowElements.push(x);
         }
         return <div className="board-row">{rowElements}</div>;
     }
@@ -66,6 +73,7 @@ function Square(props) {
         const moveLocation = this.state.moveLocation.slice(0,this.state.stepNumber +1);
         // create a copy of the state squares
         const squares = current.squares.slice();
+        // return early if someone has won the game or if the square is already filled
         if (calculateWinner(squares) || squares[i]){
             return;
         }
@@ -116,7 +124,9 @@ function Square(props) {
         });
         let finalListOfMoves = (this.state.sortOrderAscending) ? moves : moves.reverse();
         let status;
+        let winningLine = [];
         if(winner){
+            winningLine = getWinningLine(current.squares);
             status = 'Winner: ' + winner;
         } else{
             status = 'Next player: ' + this.renderTurn();
@@ -127,6 +137,7 @@ function Square(props) {
             <Board 
                 squares={current.squares} 
                 onClick={(i) => this.handleClick(i)}
+                winningLine={winningLine}
             />
           </div>
           <div className="game-info">
@@ -169,4 +180,24 @@ function Square(props) {
       }
     }
     return null;
+  }
+
+  function getWinningLine(squares) {
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+      for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+          return [a, b, c];
+        }
+      }
+      return [];
   }
